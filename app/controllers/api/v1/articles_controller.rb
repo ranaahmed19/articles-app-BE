@@ -3,11 +3,13 @@ class Api::V1::ArticlesController < ActionController::API
 
   def index
     @articles = Article.order(created_at: :DESC)
-    render json: @articles, :include => [:user]
+    # render json: @articles, :include => [:user]
+    render status: :ok
   end
 
   def show
     render json: @article, :include => [:user]
+    #render status: :ok
   end
 
   def create
