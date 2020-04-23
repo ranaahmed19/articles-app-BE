@@ -3,17 +3,17 @@ class Api::V1::ArticlesController < ActionController::API
 
   def index
     @articles = Article.order(created_at: :DESC)
-    render json: @articles
+    render json: @articles, :include => [:user]
   end
 
   def show
-    render json: @article
+    render json: @article, :include => [:user]
   end
 
   def create
     @article = Article.new(article_param)
     if @article.save
-      render json: @article, status: :created
+      render json: @article, :include => [:user], status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class Api::V1::ArticlesController < ActionController::API
   def update
     @article.update(article_param)
     if @article.save
-      render json: @article
+      render json: @article, :include => [:user]
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -39,6 +39,6 @@ class Api::V1::ArticlesController < ActionController::API
   end
 
   def article_param
-    params.require(:article).permit(:body, :title, :author)
+    params.require(:article).permit(:body, :title, :user_id)
   end
 end
