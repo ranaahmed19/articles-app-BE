@@ -8,14 +8,13 @@ class Api::V1::ArticlesController < ActionController::API
   end
 
   def show
-    render json: @article, :include => [:user]
-    #render status: :ok
+    render status: :ok
   end
 
   def create
     @article = Article.new(article_param)
     if @article.save
-      render json: @article, :include => [:user], status: :created
+      render :template => "api/v1/articles/show", status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -24,7 +23,7 @@ class Api::V1::ArticlesController < ActionController::API
   def update
     @article.update(article_param)
     if @article.save
-      render json: @article, :include => [:user]
+      render :template => "api/v1/articles/show", status: :ok
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -32,12 +31,15 @@ class Api::V1::ArticlesController < ActionController::API
 
   def destroy
     @article.destroy
+    render :template => "api/v1/empty", status: :ok
   end
 
   private
 
   def set_article
     @article = Article.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render :template => "api/v1/empty", status: :not_found
   end
 
   def article_param
