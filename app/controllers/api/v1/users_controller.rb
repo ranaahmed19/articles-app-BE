@@ -13,7 +13,8 @@ class Api::V1::UsersController < ActionController::API
   def create
     @user = User.new(user_param)
     if @user.save
-      render :template => "v1/api/users/show", status: :created
+      session[:user_id] = @user.id
+      render :template => "api/v1/users/show", status: :created
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -22,7 +23,7 @@ class Api::V1::UsersController < ActionController::API
   def update
     @user.update(user_param)
     if @user.save
-      render :template => "v1/api/users/show", status: :ok
+      render :template => "api/v1/users/show", status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
     end
