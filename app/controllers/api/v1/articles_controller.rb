@@ -13,7 +13,6 @@ class Api::V1::ArticlesController < ActionController::API
 
   def create
     @article = Article.new(article_param)
-    @article.user_id = session[:user_id]
     if @article.save
       render :template => "api/v1/articles/show", status: :created
     else
@@ -44,6 +43,6 @@ class Api::V1::ArticlesController < ActionController::API
   end
 
   def article_param
-    params.require(:article).permit(:body, :title)
+    params.require(:article).permit(:body, :title, :user_id)
   end
 end
