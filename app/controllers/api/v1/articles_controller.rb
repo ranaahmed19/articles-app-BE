@@ -1,5 +1,6 @@
 class Api::V1::ArticlesController < ActionController::API
   before_action :set_article, only: %i[show update destroy]
+  before_action :authenticate_user!, only: %i[create update destroy]
 
   def index
     @articles = Article.order(created_at: :DESC)
