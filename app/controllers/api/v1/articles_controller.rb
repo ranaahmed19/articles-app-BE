@@ -1,6 +1,7 @@
-class Api::V1::ArticlesController < ActionController::API
+class Api::V1::ArticlesController < ApplicationController
   before_action :set_article, only: %i[show update destroy]
   before_action :authenticate_user!, only: %i[create update destroy]
+  layout "application"
 
   def index
     @articles = Article.order(created_at: :DESC)
@@ -9,14 +10,16 @@ class Api::V1::ArticlesController < ActionController::API
   def create
     @article = Article.new(article_param)
     unless @article.save
-      render json: @article.errors, status: :unprocessable_entity
+      @message = @article.errors
+      render status: :unprocessable_entity
     end
   end
 
   def update
     @article.update(article_param)
     unless @article.save
-      render json: @article.errors, status: :unprocessable_entity
+      @message = @article.errors
+      render status: :unprocessable_entity
     end
   end
 
@@ -29,7 +32,8 @@ class Api::V1::ArticlesController < ActionController::API
   def set_article
     @article = Article.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render :template => "api/v1/empty", status: :not_found
+    @message = "Article not found"
+    render status: :not_found
   end
 
   def article_param
